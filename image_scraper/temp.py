@@ -1,0 +1,1 @@
+# This is just a temp file for the image scraper code ( I am not familiar with web scraping )
