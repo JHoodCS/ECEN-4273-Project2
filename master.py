@@ -9,7 +9,7 @@ from inference_sdk import InferenceHTTPClient
 import os
 
 CLIENT = InferenceHTTPClient(
-    api_url="http://localhost:9001",  # use local inference server
+    api_url="https://detect.roboflow.com",  # use local inference server
     api_key='3QIvu7zIFiIAijMbDe5X'  # optional to access your private data and models
 )
 
