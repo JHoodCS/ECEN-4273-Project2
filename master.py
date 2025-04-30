@@ -25,25 +25,23 @@ model_version = 5
 image_url = "lightsaber.jpg"
 video_url = "row1.mp4"
 output_video_name = "output.mp4"
-result_list = []
+result_list = []  # of type ndarray
+
+# Merges images from result_list into an mp4 video
 
 
 def image_merger():
-
-    # frame_width = int(result_list[0].get(cv2.CAP_PROP_FRAME_WIDTH))
-    # frame_height = int(result_list[0].get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+    # Get the height and width of the video frames
     frame_height, frame_width, _ = result_list[0].shape
-
+    # Set the encoding format of the video writer
     fourcc = cv2.VideoWriter_fourcc(*"MP4V")
-
+    # Create the VideoWriter
     out = cv2.VideoWriter(output_video_name, fourcc,
                           30.0, (frame_width, frame_height))
-
+    # Write each frame in the result list to the output video
     for frame in result_list:
         out.write(frame)
-        # cv2.waitKey(1)
-
+    # Release the output (save the video)
     out.release()
 
 
@@ -53,6 +51,7 @@ def predict_and_display(source_url, source_type):
             if result.get("output_image"):  # Display an image from the workflow response
                 cv2.imshow("Workflow Image",
                            result["output_image"].numpy_image)
+                # Add each frame of the video to result_list for later recombination (post prediction)
                 result_list.append(result["output_image"].numpy_image)
                 cv2.waitKey(1)
         # Run inference on video
@@ -113,4 +112,4 @@ def predict_and_display(source_url, source_type):
 
 
 predict_and_display(video_url, "V")  # Predict and display the image
-image_merger()
+image_merger()  # Merge the predicted images back into a single .mp4 file
