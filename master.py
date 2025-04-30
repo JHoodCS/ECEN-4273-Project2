@@ -87,7 +87,6 @@ def predict_and_display(source_url, source_type):
             },
             use_cache=True  # cache workflow definition for 15 minutes
         )
-        print(result[0]["output_image"][:100])
         # Call the sink function with the result and None for video_frame
         plot_image(result)
     elif (source_type == 'W'):
