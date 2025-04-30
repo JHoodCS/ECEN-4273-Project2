@@ -60,7 +60,6 @@ def predict_and_display(source_url, source_type):
             },
             use_cache=True # cache workflow definition for 15 minutes
         )
-        print(result[0]["output_image"][:100])
         plot_image(result) # Call the sink function with the result and None for video_frame
     elif(source_type == 'W'):
         def my_sink(result, video_frame):
@@ -82,4 +81,4 @@ def predict_and_display(source_url, source_type):
     else:
         print("Invalid source type. Please use 'V' for video, 'I' for image, or 'W' for webcam.")
 
-predict_and_display(video_url, "W") # Predict and display the image
+predict_and_display(image_url, "I") # Predict and display the image
