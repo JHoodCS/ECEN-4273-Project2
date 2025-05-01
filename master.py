@@ -1,4 +1,9 @@
-# This will be where functions are called only, there should be little to no clutter in this file
+"""
+master.py - Main file of the ECEN 4273 project.
+
+Handles inference on images, videos, and webcam feeds using Roboflow's Inference SDK.
+Also merges video frames into an output `.mp4` file after processing.    
+"""
 from inference import InferencePipeline
 from inference.core.interfaces.camera.entities import VideoFrame
 import cv2
@@ -9,12 +14,19 @@ from inference_sdk import InferenceHTTPClient
 import os
 
 CLIENT = InferenceHTTPClient(
-    api_url="http://localhost:9001",  # use local inference server
+    api_url="https://detect.roboflow.com",  # use local inference server
     api_key='3QIvu7zIFiIAijMbDe5X'  # optional to access your private data and models
 )
 
 
 def my_sink(result, video_frame):
+    """
+    Displays a video frame if the result contains an output image.
+    
+    Arguments:
+    result -- The result of the inference pipeline.
+    video_frame -- The video frame being processed.
+    """
     if result.get("output_image"):  # Display an image from the workflow response
         cv2.imshow("Workflow Image", result["output_image"].numpy_image)
         cv2.waitKey(1)
@@ -25,34 +37,44 @@ model_version = 5
 image_url = "lightsaber.jpg"
 video_url = "row1.mp4"
 output_video_name = "output.mp4"
-result_list = []
+result_list = []  # of type ndarray
+
+# Merges images from result_list into an mp4 video
 
 
 def image_merger():
-
-    # frame_width = int(result_list[0].get(cv2.CAP_PROP_FRAME_WIDTH))
-    # frame_height = int(result_list[0].get(cv2.CAP_PROP_FRAME_HEIGHT))
-
+    """
+    Merges images together from a result list into a single mp4 video.
+    Writes these images into an mp4 video file called 'output_video_name'.
+    """
+    # Get the height and width of the video frames
     frame_height, frame_width, _ = result_list[0].shape
-
+    # Set the encoding format of the video writer
     fourcc = cv2.VideoWriter_fourcc(*"MP4V")
-
+    # Create the VideoWriter
     out = cv2.VideoWriter(output_video_name, fourcc,
                           30.0, (frame_width, frame_height))
-
+    # Write each frame in the result list to the output video
     for frame in result_list:
         out.write(frame)
-        # cv2.waitKey(1)
-
+    # Release the output (save the video)
     out.release()
 
 
 def predict_and_display(source_url, source_type):
+    """
+    Runs inference on an image, video, or webcam and displays the result with bounding boxes.
+    
+    Arguments:
+    source_url -- The URL or path to the image, video, or webcam feed.
+    source_type -- The type of source: 'V' for video, 'I' for image, or 'W' for webcam.
+    """
     if (source_type == "V"):
         def my_sink(result, video_frame):
             if result.get("output_image"):  # Display an image from the workflow response
                 cv2.imshow("Workflow Image",
                            result["output_image"].numpy_image)
+                # Add each frame of the video to result_list for later recombination (post prediction)
                 result_list.append(result["output_image"].numpy_image)
                 cv2.waitKey(1)
         # Run inference on video
@@ -111,6 +133,6 @@ def predict_and_display(source_url, source_type):
     else:
         print("Invalid source type. Please use 'V' for video, 'I' for image, or 'W' for webcam.")
 
-
-predict_and_display(video_url, "V")  # Predict and display the image
-image_merger()
+if __name__ == "__main__":
+    predict_and_display(video_url, "V")  # Predict and display the image
+    image_merger()  # Merge the predicted images back into a single .mp4 file
