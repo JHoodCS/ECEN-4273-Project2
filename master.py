@@ -1,4 +1,9 @@
-# This will be where functions are called only, there should be little to no clutter in this file
+"""
+master.py - Main file of the ECEN 4273 project.
+
+Handles inference on images, videos, and webcam feeds using Roboflow's Inference SDK.
+Also merges video frames into an output `.mp4` file after processing.    
+"""
 from inference import InferencePipeline
 from inference.core.interfaces.camera.entities import VideoFrame
 import cv2
@@ -26,6 +31,13 @@ CLIENT = InferenceHTTPClient(
 
 
 def my_sink(result, video_frame):
+    """
+    Displays a video frame if the result contains an output image.
+    
+    Arguments:
+    result -- The result of the inference pipeline.
+    video_frame -- The video frame being processed.
+    """
     if result.get("output_image"):  # Display an image from the workflow response
         cv2.imshow("Workflow Image", result["output_image"].numpy_image)
         cv2.waitKey(1)
@@ -41,6 +53,10 @@ result_list = []  # of type ndarray
 # Merges images from result_list into an mp4 video
 
 def image_merger():
+    """
+    Merges images together from a result list into a single mp4 video.
+    Writes these images into an mp4 video file called 'output_video_name'.
+    """
     # Get the height and width of the video frames
     frame_height, frame_width, _ = result_list[0].shape
     # Set the encoding format of the video writer
@@ -56,6 +72,13 @@ def image_merger():
 
 
 def predict_and_display(source_url, source_type):
+    """
+    Runs inference on an image, video, or webcam and displays the result with bounding boxes.
+    
+    Arguments:
+    source_url -- The URL or path to the image, video, or webcam feed.
+    source_type -- The type of source: 'V' for video, 'I' for image, or 'W' for webcam.
+    """
     if (source_type == "V"):
         def my_sink(result, video_frame):
             if result.get("output_image"):  # Display an image from the workflow response
@@ -119,6 +142,7 @@ def predict_and_display(source_url, source_type):
         pipeline.join()  # wait for the pipeline thread to finish
     else:
         print("Invalid source type. Please use 'V' for video, 'I' for image, or 'W' for webcam.")
+        
 if(args.source == 'W'):
     predict_and_display("NULL", 'W')
 elif(args.source == 'V'):
