@@ -7,6 +7,17 @@ import base64
 import numpy as np
 from inference_sdk import InferenceHTTPClient
 import os
+import argparse
+
+
+rate = 2 #framerate for video
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-p', '--path')
+parser.add_argument('-f', '--fps')
+parser.add_argument('source')
+
+args = parser.parse_args()
 
 CLIENT = InferenceHTTPClient(
     api_url="https://detect.roboflow.com",  # use local inference server
@@ -28,7 +39,6 @@ output_video_name = "output.mp4"
 result_list = []  # of type ndarray
 
 # Merges images from result_list into an mp4 video
-
 
 def image_merger():
     # Get the height and width of the video frames
@@ -62,7 +72,7 @@ def predict_and_display(source_url, source_type):
             workflow_id="identify-sep2",
             # Path to video, device id (int, usually 0 for built in webcams), or RTSP stream url
             video_reference=source_url,
-            max_fps=30,
+            max_fps=rate,
             on_prediction=my_sink
         )
         pipeline.start()  # start the pipeline
@@ -109,7 +119,12 @@ def predict_and_display(source_url, source_type):
         pipeline.join()  # wait for the pipeline thread to finish
     else:
         print("Invalid source type. Please use 'V' for video, 'I' for image, or 'W' for webcam.")
+if(args.source == 'W'):
+    predict_and_display("NULL", 'W')
+elif(args.source == 'V'):
+    predict_and_display(args.path, args.source)
+    rate = float(args.fps)
+elif(args.source == 'I'):
+    predict_and_display(args.path, args.source)
 
-
-predict_and_display(video_url, "V")  # Predict and display the image
 image_merger()  # Merge the predicted images back into a single .mp4 file
