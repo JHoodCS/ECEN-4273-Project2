@@ -34,7 +34,7 @@ jobs:
 
     - name: Run on input video
       run: |
-        python master.py -p test-assets/sample.mp4 -f 2 V
+        python master.py -p videoplayback.mp4 -f 2 V
   
     - name: Upload output video
       uses: actions/upload-artifact@v3
