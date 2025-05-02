@@ -1,4 +1,4 @@
-name: Project CI
+name: Project CI/CD
 
 on:
   push:
@@ -31,3 +31,13 @@ jobs:
     - name: Check file syntax
       run: |
         python -m py_compile master.py
+
+    - name: Run on input video
+      run: |
+        python master.py -p test-assets/sample.mp4 -f 2 V
+  
+    - name: Upload output video
+      uses: actions/upload-artifact@v3
+      with:
+        name: inference-output
+        path: output.mp4
