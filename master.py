@@ -1,9 +1,16 @@
 """
 master.py - Main file of the ECEN 4273 project.
 
-Handles inference on images, videos, and webcam feeds using Roboflow's Inference SDK.
-Also merges video frames into an output `.mp4` file after processing.    
+This script performs object detection on images, video files, or live webcam feeds
+using Roboflow's Inference SDK. It handles the inference pipeline setup, prediction
+callbacks, and postprocessing such as merging video frames into a `.mp4` file.
+
+Usage:
+    python master.py -p path/to/image_or_video -f 2 V
+    python master.py -p path/to/image.jpg I
+    python master.py W
 """
+
 from inference import InferencePipeline
 from inference.core.interfaces.camera.entities import VideoFrame
 import cv2
@@ -35,8 +42,11 @@ def my_sink(result, video_frame):
     Displays a video frame if the result contains an output image.
     
     Arguments:
-    result -- The result of the inference pipeline.
-    video_frame -- The video frame being processed.
+        result -- The result of the inference pipeline.
+        video_frame -- The video frame being processed.
+    
+    Output: 
+        A video file named 'output.mp4' saved in the current directory.
     """
     if result.get("output_image"):  # Display an image from the workflow response
         cv2.imshow("Workflow Image", result["output_image"].numpy_image)
@@ -143,12 +153,12 @@ def predict_and_display(source_url, source_type):
     else:
         print("Invalid source type. Please use 'V' for video, 'I' for image, or 'W' for webcam.")
         
-if(args.source == 'W'):
-    predict_and_display("NULL", 'W')
-elif(args.source == 'V'):
-    predict_and_display(args.path, args.source)
-    rate = float(args.fps)
-elif(args.source == 'I'):
-    predict_and_display(args.path, args.source)
-
-image_merger()  # Merge the predicted images back into a single .mp4 file
+if __name__ == "__main__":
+    if(args.source == 'W'):
+        predict_and_display("NULL", 'W')
+    elif(args.source == 'V'):
+        predict_and_display(args.path, args.source)
+        rate = float(args.fps)
+    elif(args.source == 'I'):
+        predict_and_display(args.path, args.source)
+    image_merger()  # Merge the predicted images back into a single .mp4 file
