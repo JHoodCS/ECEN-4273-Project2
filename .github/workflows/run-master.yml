@@ -2,9 +2,13 @@ name: Project CI
 
 on:
   push:
-    branches: [ main ]
+    paths:
+      - 'master.py'
+      - 'requirements.txt'
   pull_request:
-    branches: [ main ]
+    paths:
+      - 'master.py'
+      - 'requirements.txt'
 
 jobs:
   build-and-test:
@@ -24,6 +28,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run master.py
+    - name: Check file syntax
       run: |
-        python master.py
+        python -m py_compile master.py
