@@ -27,7 +27,7 @@ It achieves a mAP50 of ~81%. Indicating accuracy is fairly high despite our limi
 - `LICENSE`: MIT License for the project.
 
 ## Prerequisites
-- Python 3.8 or higher.
+- Python version < 3.12, >= 3.8 (Our demo ran on python 3.11.9)
 - Required Python libraries (listed in `requirements.txt`).
 - OpenCV installed (`pip install opencv-python`).
 - A valid Roboflow API key for accessing the inference SDK.
@@ -74,14 +74,11 @@ It achieves a mAP50 of ~81%. Indicating accuracy is fairly high despite our limi
 3. For image input, the processed image is displayed in a window.
 4. For webcam input, the processed frames are displayed in real-time.
 
-## Testing
-To run the test suite:
-1. Ensure all dependencies are installed.
-2. Run the test cases (if applicable):
+## Autodocumentation
+We used pydoc to generate our documentation. To regenerate the documentation use:
     ```
-    python -m unittest discover tests
+    python -m pydoc master > helpfile.txt
     ```
-
 ## Notes
 - Ensure that the API key in `master.py` is valid for accessing Roboflow's services.
 - Modify the `requirements.txt` file if additional dependencies are needed.

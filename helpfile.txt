@@ -1,0 +1,50 @@
+Help on module master:
+
+NAME
+    master - master.py - Main file of the ECEN 4273 project.
+
+DESCRIPTION
+    This script performs object detection on images, video files, or live webcam feeds
+    using Roboflow's Inference SDK. It handles the inference pipeline setup, prediction
+    callbacks, and postprocessing such as merging video frames into a `.mp4` file.
+    
+    Usage:
+        python master.py -p path/to/image_or_video -f 2 V
+        python master.py -p path/to/image.jpg I
+        python master.py W
+
+FUNCTIONS
+    image_merger()
+        Merges images together from a result list into a single mp4 video.
+        Writes these images into an mp4 video file called 'output_video_name'.
+    
+    my_sink(result, video_frame)
+        Displays a video frame if the result contains an output image.
+        
+        Arguments:
+            result -- The result of the inference pipeline.
+            video_frame -- The video frame being processed.
+        
+        Output: 
+            A video file named 'output.mp4' saved in the current directory.
+    
+    predict_and_display(source_url, source_type)
+        Runs inference on an image, video, or webcam and displays the result with bounding boxes.
+        
+        Arguments:
+        source_url -- The URL or path to the image, video, or webcam feed.
+        source_type -- The type of source: 'V' for video, 'I' for image, or 'W' for webcam.
+
+DATA
+    CLIENT = <inference_sdk.http.client.InferenceHTTPClient object>
+    args = Namespace(path=None, fps=None, source='master')
+    image_url = 'lightsaber.jpg'
+    model_version = 5
+    output_video_name = 'output.mp4'
+    parser = ArgumentParser(prog='pydoc.py', usage=None, desc...atter'>, c...
+    project_id = 'sep2-e2mjc'
+    rate = 2
+    result_list = []
+    video_url = 'row1.mp4'
+
+
